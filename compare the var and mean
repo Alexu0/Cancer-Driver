@@ -1,0 +1,12 @@
+for i in range(len(vs)):
+	ter=[]
+	for j in range(len(data[:,i])):
+		if data[:,i][j]:
+			ter+=[target[j]]
+	if ter==[]:
+		vs[i]=0
+	else:
+		tern=np.array(ter)
+		vs[i]=tern.mean()
+	if i%836==0:
+		print(i/836)
