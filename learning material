@@ -1,0 +1,414 @@
+Python 2.7.7 (default, Jun  1 2014, 14:21:57) [MSC v.1500 64 bit (AMD64)] on win32
+Type "copyright", "credits" or "license()" for more information.
+>>> x4=np.load("C:/Users/N1604313C/Desktop/python_projext/npy_datasets1.1/cleaned_mutation_data_x.npy")
+
+Traceback (most recent call last):
+  File "<pyshell#0>", line 1, in <module>
+    x4=np.load("C:/Users/N1604313C/Desktop/python_projext/npy_datasets1.1/cleaned_mutation_data_x.npy")
+NameError: name 'np' is not defined
+>>> import numpy as np
+>>> x=np.load("C:/Users/N1604313C/Desktop/python_projext/npy_datasets1.1/cleaned_mutation_data_x.npy")
+>>> y=np.load("C:/Users/N1604313C/Desktop/python_projext/npy_datasets1.1/mutation_score_digital_y.npy")
+>>> s.shape
+
+Traceback (most recent call last):
+  File "<pyshell#4>", line 1, in <module>
+    s.shape
+NameError: name 's' is not defined
+>>> x.shape
+(5165L, 83641L)
+>>> from sklearn.feature_selection import *
+>>> selector=VarianceThreshold()
+>>> x[0,:10]
+array([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9.])
+>>> x[1,:10]
+array([ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.])
+>>> x[1:].sum()
+394861.0
+>>> 394861./(5164*83641)
+0.0009141948931516182
+>>> selector.fit(x[1:])
+VarianceThreshold(threshold=0.0)
+>>> selector.variances_
+array([ 0.00019361,  0.00019361,  0.00038715, ...,  0.        ,
+        0.        ,  0.        ])
+>>> sum(selector.variances_==0)
+23355
+>>> 
+>>> y.shape
+(5164L, 2L)
+>>> y
+array([[  0.00000000e+00,   8.42676130e+02],
+       [  1.00000000e+00,   2.10393013e+03],
+       [  2.00000000e+00,  -1.03838906e+03],
+       ..., 
+       [  1.20000000e+01,  -6.01147260e+02],
+       [  1.10000000e+01,  -1.22105760e+02],
+       [  1.40000000e+01,   1.67490909e+03]])
+>>> x[1:][:,1].sum()
+1.0
+>>> x[1:,:].sum(axis=0)
+array([ 1.,  1.,  2., ...,  0.,  0.,  0.])
+>>> x[1:,:].sum(axis=0).max()
+1057.0
+>>> np.percentile(x[1:,:].sum(axis=0),(0,10,25,50,75,90,100))
+array([    0.,     0.,     0.,     3.,     6.,    12.,  1057.])
+>>> x_=selector.tranform(x[1:])
+
+Traceback (most recent call last):
+  File "<pyshell#22>", line 1, in <module>
+    x_=selector.tranform(x[1:])
+AttributeError: 'VarianceThreshold' object has no attribute 'tranform'
+>>> x_=selector.transform(x[1:])
+>>> x_.shape
+(5164L, 60286L)
+>>> x_=selector.transform(x)
+>>> x_[0]
+array([  0.00000000e+00,   1.00000000e+00,   2.00000000e+00, ...,
+         8.13200000e+04,   8.13210000e+04,   8.13230000e+04])
+>>> x_[1]
+array([ 0.,  0.,  0., ...,  0.,  0.,  0.])
+>>> from scipy.stats import pearsonr
+>>> import matplotlib.pyplot as plt
+plt.hist(y[:,1]);plt.show()
+>>> 
+>>> plt.hist(y[:,1]);plt.show()
+(array([   67.,   552.,  1108.,  1125.,   937.,   680.,   420.,   200.,
+          64.,    11.]), array([-2012.45772 , -1447.243323,  -882.028926,  -316.814529,
+         248.399868,   813.614265,  1378.828662,  1944.043059,
+        2509.257456,  3074.471853,  3639.68625 ]), <a list of 10 Patch objects>)
+>>> yth1,yth2=np.percentile(y[:,1],(25,75))
+>>> YTH1
+
+Traceback (most recent call last):
+  File "<pyshell#33>", line 1, in <module>
+    YTH1
+NameError: name 'YTH1' is not defined
+>>> yth1
+-523.05139499999996
+>>> yth2
+873.98484749999989
+>>> y_=np.array(y[:,1],copy=True)
+>>> y_[y_<=yth1]=0;y_[y_>=yth2]=1;
+>>> y_=np.array(y[:,1],copy=True)
+>>> id1=y_<=yth1;id2=y_>=yth2;
+>>> y_[id1]=0;y_[id2]=1;
+>>> y_=y_[np.logical_or(id1,id2)];
+>>> x_=np.r_[x_[0], x_[1:][np.logical_or(id1,id2)]];
+
+Traceback (most recent call last):
+  File "<pyshell#42>", line 1, in <module>
+    x_=np.r_[x_[0], x_[1:][np.logical_or(id1,id2)]];
+  File "C:\Python27\lib\site-packages\numpy\lib\index_tricks.py", line 338, in __getitem__
+    res = _nx.concatenate(tuple(objs), axis=self.axis)
+ValueError: all the input arrays must have same number of dimensions
+>>> x_[0].shape
+(60286L,)
+>>> x_[1:][np.logical_or(id1,id2)].shape
+(2582L, 60286L)
+>>> x2=np.r_[x_[0].reshape(1,len(x_[0]))), x_[1:][np.logical_or(id1,id2)]];
+SyntaxError: invalid syntax
+>>> x2=np.r_[x_[0].reshape(1,len(x_[0])), x_[1:][np.logical_or(id1,id2)]];
+>>> x1=np.array(x_,copy=True)
+>>> x.shape
+(5165L, 83641L)
+x
+>>> x1.shape
+(5165L, 60286L)
+>>> x2.shape
+(2583L, 60286L)
+>>> y_.shape
+(2582L,)
+>>> del x_
+>>> pearsonr(x2[1:,0],y_)
+(0.019683666479473907, 0.3174042858769161)
+>>> [pearsonr(x2[1:,i],y_)[0] for i in range(10)]
+
+Warning (from warnings module):
+  File "C:\Python27\lib\site-packages\scipy\stats\stats.py", line 3029
+    r = r_num / r_den
+RuntimeWarning: invalid value encountered in double_scalars
+
+Warning (from warnings module):
+  File "C:\Python27\lib\site-packages\scipy\stats\stats.py", line 3038
+    t_squared = r**2 * (df / ((1.0 - r) * (1.0 + r)))
+RuntimeWarning: invalid value encountered in double_scalars
+
+Warning (from warnings module):
+  File "C:\Python27\lib\site-packages\scipy\stats\stats.py", line 5084
+    x = np.where(x < 1.0, x, 1.0)  # if x > 1 then return 1.0
+RuntimeWarning: invalid value encountered in less
+[0.019683666479473907, nan, -0.019683666479473904, nan, 0.019683666479473904, 0.011368775789164533, 0.03217447260438934, nan, -0.019683666479473907, 0.027842302319485233]
+>>> from scipy.stats import *
+>>> [spearmanr(x2[1:,i],y_)[0] for i in range(10)]
+
+Warning (from warnings module):
+  File "C:\Python27\lib\site-packages\numpy\lib\function_base.py", line 3003
+    c /= stddev[:, None]
+RuntimeWarning: invalid value encountered in true_divide
+
+Warning (from warnings module):
+  File "C:\Python27\lib\site-packages\numpy\lib\function_base.py", line 3004
+    c /= stddev[None, :]
+RuntimeWarning: invalid value encountered in true_divide
+
+Warning (from warnings module):
+  File "C:\Python27\lib\site-packages\scipy\stats\_distn_infrastructure.py", line 875
+    return (self.a < x) & (x < self.b)
+RuntimeWarning: invalid value encountered in greater
+
+Warning (from warnings module):
+  File "C:\Python27\lib\site-packages\scipy\stats\_distn_infrastructure.py", line 875
+    return (self.a < x) & (x < self.b)
+RuntimeWarning: invalid value encountered in less
+
+Warning (from warnings module):
+  File "C:\Python27\lib\site-packages\scipy\stats\_distn_infrastructure.py", line 1814
+    cond2 = cond0 & (x <= self.a)
+RuntimeWarning: invalid value encountered in less_equal
+[0.019683666479473904, nan, -0.019683666479473904, nan, 0.019683666479473904, 0.011368775789164532, 0.03217447260438934, nan, -0.019683666479473904, 0.027842302319485222]
+>>> [kendalltau(x2[1:,i],y_)[0] for i in range(10)]
+[0.019683666479473904, nan, -0.019683666479473904, nan, 0.019683666479473904, 0.011368775789164532, 0.03217447260438934, nan, -0.019683666479473904, 0.027842302319485226]
+>>> x2[1:,1]
+array([ 0.,  0.,  0., ...,  0.,  0.,  0.])
+>>> from sklearn.feature_selection import SelectPercentile,chi2
+>>> sp = SelectPercentile(chi2, percentile=50).fit(x2, y_)
+
+Traceback (most recent call last):
+  File "<pyshell#60>", line 1, in <module>
+    sp = SelectPercentile(chi2, percentile=50).fit(x2, y_)
+  File "C:\Python27\lib\site-packages\sklearn\feature_selection\univariate_selection.py", line 322, in fit
+    X, y = check_X_y(X, y, ['csr', 'csc'], multi_output=True)
+  File "C:\Python27\lib\site-packages\sklearn\utils\validation.py", line 531, in check_X_y
+    check_consistent_length(X, y)
+  File "C:\Python27\lib\site-packages\sklearn\utils\validation.py", line 181, in check_consistent_length
+    " samples: %r" % [int(l) for l in lengths])
+ValueError: Found input variables with inconsistent numbers of samples: [2583, 2582]
+>>> sp = SelectPercentile(chi2, percentile=50).fit(x2[1:], y_)
+>>> x.shape
+(5165L, 83641L)
+>>> x1.shape
+(5165L, 60286L)
+>>> x2.shape
+(2583L, 60286L)
+>>> x3_=sp.transform(x2[1:]);
+>>> x3_.shape
+(2582L, 30143L)
+>>> scores_
+
+Traceback (most recent call last):
+  File "<pyshell#67>", line 1, in <module>
+    scores_
+NameError: name 'scores_' is not defined
+>>> sp.scores_
+array([ 1. ,  nan,  1. , ...,  2. ,  1.8,  1. ])
+>>> np.isnan(x2[1:])
+array([[False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False],
+       ..., 
+       [False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False]], dtype=bool)
+>>> np.isnan(x2[1:]).any()
+False
+>>> np.isinf(x2[1:]).any()
+False
+>>> np.sort(sp.scores_)
+array([  0.,   0.,   0., ...,  nan,  nan,  nan])
+>>> np.isnan(sp.scores_).sum()
+9087
+>>> sp.scores_.shape
+(60286L,)
+>>> np.isnan(sp.scores_).sum()*1./sp.scores_.shape[0]
+0.15073151312079089
+>>> plt.plot(x2[1:,1]);plt.plot(y2+2);plt.show()
+[<matplotlib.lines.Line2D object at 0x000000001AE02B00>]
+
+Traceback (most recent call last):
+  File "<pyshell#76>", line 1, in <module>
+    plt.plot(x2[1:,1]);plt.plot(y2+2);plt.show()
+NameError: name 'y2' is not defined
+>>> plt.plot(x2[1:,1]);plt.plot(y_+2);plt.show()
+[<matplotlib.lines.Line2D object at 0x000000001AE02CC0>]
+[<matplotlib.lines.Line2D object at 0x000000001AE14320>]
+>>> np.unique(x2[1:,1])
+array([ 0.])
+>>> plt.plot(x2[1:,1]);plt.plot(y_+2);plt.show()
+[<matplotlib.lines.Line2D object at 0x0000000044548588>]
+[<matplotlib.lines.Line2D object at 0x0000000044548748>]
+>>> a=1
+>>> a=1;
+>>> 1
+1
+>>> 1;
+1
+>>> ================================ RESTART ================================
+>>> 
+> c:\users\n1604313c\desktop\aaa.py(11)<module>()
+-> yth1,yth2=np.percentile(y[:,1],(25,75))
+(Pdb) n
+> c:\users\n1604313c\desktop\aaa.py(12)<module>()
+-> y_=np.array(y[:,1],copy=True)
+(Pdb) yth1
+-523.05139499999996
+(Pdb) yth2
+873.98484749999989
+(Pdb) n
+> c:\users\n1604313c\desktop\aaa.py(13)<module>()
+-> id1=y_<=yth1
+(Pdb) 
+> c:\users\n1604313c\desktop\aaa.py(14)<module>()
+-> id2=y_>=yth2
+(Pdb) 
+> c:\users\n1604313c\desktop\aaa.py(15)<module>()
+-> y_[id1]=0
+(Pdb) 
+> c:\users\n1604313c\desktop\aaa.py(16)<module>()
+-> y_[id2]=1
+(Pdb) 
+> c:\users\n1604313c\desktop\aaa.py(17)<module>()
+-> y_=y_[np.logical_or(id1,id2)]
+(Pdb) 
+> c:\users\n1604313c\desktop\aaa.py(18)<module>()
+-> x1=np.r_[x[0].reshape(1,len(x[0])), x[1:][np.logical_or(id1,id2)]]
+(Pdb) np.unique(y_)
+array([ 0.,  1.])
+(Pdb) n
+> c:\users\n1604313c\desktop\aaa.py(21)<module>()
+-> good_ids = np.sum(x1[1:],axis=0)>0
+(Pdb) x1.shape
+(2583L, 83641L)
+(Pdb) n
+> c:\users\n1604313c\desktop\aaa.py(22)<module>()
+-> x2 = x1[:,good_ids]
+(Pdb) 
+> c:\users\n1604313c\desktop\aaa.py(25)<module>()
+-> sp = SelectPercentile(chi2, percentile=50).fit(x2[1:], y_)
+(Pdb) x2.shape
+(2583L, 51199L)
+(Pdb) n
+> c:\users\n1604313c\desktop\aaa.py(26)<module>()
+-> good_ids = sp.scores_>=np.percentile(sp.scores_,50)
+(Pdb) sp.scores_
+array([ 1. ,  1. ,  1. , ...,  2. ,  1.8,  1. ])
+(Pdb) np.isnan(np.scores_).any()
+*** AttributeError: 'module' object has no attribute 'scores_'
+(Pdb) np.isnan(sp.scores_).any()
+False
+(Pdb) sp.scores_.min()
+0.0
+(Pdb) sp.scores_.max()
+83.981595092024534
+(Pdb) np.percentile(sp.scores_,(25,50,75))
+array([ 0.33333333,  1.        ,  2.        ])
+(Pdb) sp.pvalues_
+array([ 0.31731051,  0.31731051,  0.31731051, ...,  0.15729921,
+        0.17971249,  0.31731051])
+(Pdb) np.sum(sp.pvalues_<0.05)
+3760
+(Pdb) q
+
+Traceback (most recent call last):
+  File "C:/Users/N1604313C/Desktop/aaa.py", line 26, in <module>
+    good_ids = sp.scores_>=np.percentile(sp.scores_,50)
+  File "C:/Users/N1604313C/Desktop/aaa.py", line 26, in <module>
+    good_ids = sp.scores_>=np.percentile(sp.scores_,50)
+BdbQuit
+>>> ================================ RESTART ================================
+>>> 
+> c:\users\n1604313c\desktop\aaa.py(11)<module>()
+-> yth1,yth2=np.percentile(y[:,1],(25,75))
+(Pdb) b 26
+Breakpoint 1 at c:\users\n1604313c\desktop\aaa.py:26
+(Pdb) c
+> c:\users\n1604313c\desktop\aaa.py(26)<module>()
+-> good_ids = sp.pvalues_<=0.05
+(Pdb) n
+> c:\users\n1604313c\desktop\aaa.py(27)<module>()
+-> x3 = x2[:,good_ids]
+(Pdb) 
+--Return--
+> c:\users\n1604313c\desktop\aaa.py(27)<module>()->None
+-> x3 = x2[:,good_ids]
+(Pdb) x3.shape
+(2583L, 3760L)
+(Pdb) from sklearn.svm import SVC
+(Pdb) svm=SVC(C=1.).fit(x3[1:,:2000],y_[:2000])
+*** ValueError: Found input variables with inconsistent numbers of samples: [2582, 2000]
+(Pdb) x3.shape
+(2583L, 3760L)
+(Pdb) y_.shape
+(2582L,)
+(Pdb) svm=SVC(C=1.).fit(x3[1:2001],y_[:2000])
+(Pdb) svm.score(x3[1:2001],y_[:2000])
+0.50900000000000001
+(Pdb) svm=SVC(C=0.1).fit(x3[1:2001],y_[:2000])
+(Pdb) svm.score(x3[1:2001],y_[:2000])
+0.50149999999999995
+(Pdb) svm=SVC(C=10.).fit(x3[1:2001],y_[:2000])
+(Pdb) svm.score(x3[1:2001],y_[:2000])
+0.59550000000000003
+(Pdb) svm.score(x3[2001:],y_[2000:])
+0.55670103092783507
+(Pdb) from sklearn.svm import SVR
+(Pdb) y.sha[e
+*** SyntaxError: unexpected EOF while parsing (<stdin>, line 1)
+(Pdb) y.shape
+(5164L, 2L)
+(Pdb) y_.shape
+(2582L,)
+(Pdb) yr=np.array(y[:,1],copy=True)[np.logical_or(id1,id2)]
+(Pdb) yr.shape
+(2582L,)
+(Pdb) svr=SVR(C=10.).fit(x3[1:2001],yr[:2000])
+(Pdb) svr.score(x3[2001:],yr[2000:])
+-0.44974754056783484
+(Pdb) from sklearn.naive_bayes import BernoulliNB
+(Pdb) nb=BernoulliNB().fit(x3[1:2001],y_[:2000])
+(Pdb) nb.score(x3[1:2001],y_[:2000])
+0.66849999999999998
+(Pdb) nb.score(x3[2001:],y_[2000:])
+0.63230240549828176
+(Pdb) nb2=BernoulliNB(alpha=2.).fit(x3[1:2001],y_[:2000])
+(Pdb) nb.score(x3[1:2001],y_[:2000])
+0.66849999999999998
+(Pdb) nb2.score(x3[1:2001],y_[:2000])
+0.64800000000000002
+(Pdb) nb2.score(x3[2001:],y_[2000:])
+0.61340206185567014
+(Pdb) from sklearn.linear_model import LogisticRegression
+(Pdb) lr=LogisticRegression(C=1.,max_iter=1000).fit(x3[1:2001],y_[:2000])
+(Pdb) lr.score(x3[1:2001],y_[:2000])
+0.92649999999999999
+(Pdb) lr.score(x3[2001:],y_[2000:])
+0.71134020618556704
+(Pdb) lr=LogisticRegression(C=0.1,max_iter=1000).fit(x3[1:2001],y_[:2000])
+(Pdb) lr.score(x3[1:2001],y_[:2000])
+0.83750000000000002
+(Pdb) lr.score(x3[2001:],y_[2000:])
+0.70790378006872856
+(Pdb) lr=LogisticRegression(C=10.,max_iter=1000).fit(x3[1:2001],y_[:2000])
+(Pdb) lr.score(x3[1:2001],y_[:2000])
+0.96450000000000002
+(Pdb) lr.score(x3[2001:],y_[2000:])
+0.72164948453608246
+(Pdb) lr=LogisticRegression(C=10.,penalty='l1',max_iter=1000).fit(x3[1:2001],y_[:2000])
+(Pdb) lr.score(x3[1:2001],y_[:2000])
+0.96499999999999997
+(Pdb) lr.score(x3[2001:],y_[2000:])
+0.6872852233676976
+(Pdb) from sklearn.linear_model import LogisticRegressionCV
+(Pdb) lr=LogisticRegressionCV(Cs=[0.001,0.01,0.1,1.,10.,100.,1000.],penalty='l2',max_iter=1000,cv=10).fit(x3[1:2001],y_[:2000])
+(Pdb) lr.score(x3[2001:],y_[2000:])
+0.71134020618556704
+(Pdb) from sklearn.decomposition import PCA
+(Pdb) pca=PCA(n_components=0.9, whiten=True).fit(x3[1:2001])
+(Pdb) x4= pca.transform(x3[1:2001])
+(Pdb) lr=LogisticRegressionCV(Cs=[0.001,0.01,0.1,1.,10.,100.,1000.],penalty='l2',max_iter=1000,cv=10).fit(x4,y_[:2000])
+(Pdb) x4_te = pca.transform(x3[2001:])
+(Pdb) lr.score(x4_te,y_[2000:])
+0.71821305841924399
+(Pdb) x4.shape
+(2000L, 498L)
+(Pdb) 
