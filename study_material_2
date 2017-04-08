@@ -1,0 +1,36 @@
+import pdb
+import numpy as np
+from sklearn.feature_selection import *
+from sklearn.linear_model import LogisticRegressionCV
+
+
+x=np.load("C:/Users/N1604313C/Desktop/python_projext/npy_datasets1.1/cleaned_mutation_data_x.npy")
+y=np.load("C:/Users/N1604313C/Desktop/python_projext/npy_datasets1.1/mutation_score_digital_y.npy")
+
+pdb.set_trace()
+# define classification labels
+yth1,yth2=np.percentile(y[:,1],(25,75))
+yc=np.array(y[:,1],copy=True)
+id1=yc<=yth1
+id2=yc>=yth2
+yc[id1]=0
+yc[id2]=1
+yc=yc[np.logical_or(id1,id2)]
+yr=np.array(y[:,1],copy=True)[np.logical_or(id1,id2)]
+x1=np.r_[x[0].reshape(1,len(x[0])), x[1:][np.logical_or(id1,id2)]]
+
+# remove features with all 1s and 0s
+good_ids = np.sum(x1[1:],axis=0)>0
+x2 = x1[:,good_ids]
+
+# keep features with chi2 pvalue<0.05
+sp = SelectPercentile(chi2, percentile=50).fit(x2[1:], y_)
+good_ids = sp.pvalues_<=0.05
+x3 = x2[:,good_ids]
+
+
+Xtr = x[]
+Xte = x[]
+
+lr=LogisticRegressionCV(Cs=[0.001,0.01,0.1,1.,10.,100.,1000.],penalty='l2',max_iter=1000,cv=10).fit(x3[1:2001],y_[:2000])
+lr.score(x3[2001:],y_[2000:])
