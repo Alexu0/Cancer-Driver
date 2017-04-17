@@ -1,0 +1,19 @@
+#to get the 
+import numpy as np
+ids=np.load("/Users/apple/Desktop/result/1.2/ids.npy")
+f=open("/Users/apple/Desktop/result/1.2/idg.txt")
+idg=f.read()
+idg=idg.split("\n")
+del idg[-1]
+num=np.arange(83641)
+ch=[1,11,12,13,14,15,16]
+for i in ch:
+    idp=ids[i]==1
+    chnum=num[idp]
+    coef=idg[i][1:-2]
+    coef=coef.split(", ")
+    coef=np.array(coef)
+    coef=coef.astype(np.float)
+    thd1,thd2=np.percentile(coef,(10,90))
+    id1=coef<=thd1
+    id2=coef>=thd2
